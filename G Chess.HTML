@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chess Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #333;
+            margin: 20px 0;
+            font-size: 2.5em;
+        }
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            margin: 20px auto;
+            border: 5px solid #333;
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
+        .chessboard div {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .light {
+            background-color: #f0d9b5; /* Light brown */
+        }
+        .dark {
+            background-color: #b58863; /* Dark brown */
+        }
+        .piece {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #fff;
+        }
+        .piece.white {
+            color: white;
+        }
+        .piece.black {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Chess Game</h1>
+    <div class="chessboard" id="chessboard"></div>
+
+    <script>
+        const chessboard = document.getElementById('chessboard');
+        const initialPosition = [
+            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+            ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+        ];
+
+        const pieces = {
+            r: '♖', // Black rook
+            n: '♘', // Black knight
+            b: '♗', // Black bishop
+            q: '♕', // Black queen
+            k: '♔', // Black king
+            p: '♟', // Black pawn
+            R: '♖', // White rook
+            N: '♘', // White knight
+            B: '♗', // White bishop
+            Q: '♕', // White queen
+            K: '♔', // White king
+            P: '♙'  // White pawn
+        };
+
+        let selectedPiece = null;
+
+        // Create the chessboard with pieces
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const square = document.createElement('div');
+                square.classList.add((row + col) % 2 === 0 ? 'light' : 'dark');
+                square.dataset.row = row;
+                square.dataset.col = col;
+                square.setAttribute("id", `square-${row}-${col}`);
+                chessboard.appendChild(square);
+
+                const piece = initialPosition[row][col];
+                if (piece) {
+                    const pieceDiv = document.createElement('div');
+                    pieceDiv.classList.add('piece', piece === piece.toUpperCase() ? 'white' : 'black');
+                    pieceDiv.textContent = pieces[piece];
+                    pieceDiv.dataset.piece = piece;
+                    pieceDiv.dataset.row = row;
+                    pieceDiv.dataset.col = col;
+                    square.appendChild(pieceDiv);
+
+                    // Event listener for selecting a piece
+                    pieceDiv.addEventListener('click', () => {
+                        if (selectedPiece) {
+                            // Move the piece to the clicked square
+                            const targetSquare = document.getElementById(`square-${row}-${col}`);
+                            targetSquare.appendChild(selectedPiece);
+                            selectedPiece.dataset.row = row;
+                            selectedPiece.dataset.col = col;
+
+                            // Reset selected piece
+                            selectedPiece = null;
+                        } else {
+                            // Select the piece
+                            selectedPiece = pieceDiv;
+                        }
+                    });
+                }
+            }
+        }
+
+        // Handle click event on the chessboard to move the selected piece
+        chessboard.addEventListener('click', (e) => {
+            if (e.target.classList.contains('light') || e.target.classList.contains('dark')) {
+                // If a piece is selected, move it to the clicked square
+                if (selectedPiece) {
+                    const targetSquare = e.target;
+                    targetSquare.appendChild(selectedPiece);
+                    selectedPiece.dataset.row = targetSquare.dataset.row;
+                    selectedPiece.dataset.col = targetSquare.dataset.col;
+
+                    // Reset the selected piece
+                    selectedPiece = null;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+<name>
+    G Chess
+</name>
